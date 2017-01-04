@@ -22,7 +22,18 @@
         <item name="dayNightTwoTextColor">@color/day_two_text_color</item>
         <item name="dayNightThreeTextColor">@color/day_three_text_color</item>
         <item name="dayNightBackgroundDrawable">@color/day_backgroup_color</item>
+
+        <!-- 箭头的三个点的样式 -->
+        <item name="colorControlNormal">@android:color/white</item>
+        <!-- 头部标题的颜色 -->
+        <item name="titleTextAppearance">@style/TextAppearance.AppTheme_Day.Title</item>
+        <!-- ToolBar菜单颜色 -->
+        <item name="actionMenuTextColor">@color/white</item>
+
+        <item name="titleTextColor">@color/white</item>
+
     </style>
+
     <!--夜间主题-->
     <style name="NightTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/night_backgroup_color</item>
@@ -35,8 +46,23 @@
         <item name="dayNightThreeTextColor">@color/night_there_text_color</item>
         <item name="dayNightBackgroundDrawable">@color/night_there_text_color</item>
 
+        <!-- 箭头的三个点的样式 -->
+        <item name="colorControlNormal">@android:color/black</item>
+        <!-- 头部标题的颜色 -->
+        <item name="titleTextAppearance">@style/TextAppearance.AppTheme_Night.Title</item>
+        <!-- ToolBar菜单颜色 -->
+        <item name="actionMenuTextColor">@color/black</item>
+
     </style>
 
+
+    <style name="TextAppearance.AppTheme_Day.Title" parent="Base.TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme_Night.Title" parent="Base.TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 
     <!--普通dialog-->
     <style name="CustomProgressDialog" parent="@style/CustomDialog">

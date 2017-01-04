@@ -16,7 +16,7 @@ public class BasePresenter<V , M > {
     public RxManager mRxManager = new RxManager();
 
 
-    protected void setVM(V mView,M mModle){
+    public void setVM(V mView,M mModle){
         this.mView = mView;
         this.mModle = mModle;
 
@@ -30,7 +30,7 @@ public class BasePresenter<V , M > {
     }
 
     public void destory(){
-        //做一些释放资源，回收操作
+        //做一些释放资源，回收操作,在activity/fragment ondestory中调用
         mRxManager.clear();
     }
 

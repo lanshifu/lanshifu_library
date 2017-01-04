@@ -22,7 +22,6 @@
                 android:background="?attr/colorPrimary"
                 android:minHeight="?attr/actionBarSize" />
 
-
             <TextView
                 android:id="@+id/comm_toolbar_title"
                 style="?attr/titleTextAppearance"

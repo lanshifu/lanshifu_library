@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Window;
 
 import butterknife.ButterKnife;
@@ -19,7 +17,6 @@ import library.lanshifu.com.lsf_library.baserx.RxManager;
 import library.lanshifu.com.lsf_library.commwidget.LoadingDialog;
 import library.lanshifu.com.lsf_library.commwidget.StatusBarCompat;
 import library.lanshifu.com.lsf_library.daynightmodeutils.ChangeModeController;
-import library.lanshifu.com.lsf_library.utils.L;
 import library.lanshifu.com.lsf_library.utils.T;
 import library.lanshifu.com.lsf_library.utils.TUtil;
 
@@ -71,10 +68,11 @@ public abstract class BaseActivity<P extends BasePresenter, M extends BaseModle>
     public RxManager mRxManager;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         doBeforeSetcontentView();
         setContentView(getLayoutId());
+        doAfterSetContentView();
         ButterKnife.bind(this);
         mRxManager = new RxManager();
         mContext = this;
@@ -91,6 +89,11 @@ public abstract class BaseActivity<P extends BasePresenter, M extends BaseModle>
 
 
     }
+
+    /**
+     *
+     */
+    protected  void doAfterSetContentView(){};
 
 
     /**
@@ -228,9 +231,9 @@ public abstract class BaseActivity<P extends BasePresenter, M extends BaseModle>
 
         ButterKnife.unbind(this);
         AppManager.getAppManager().finishActivity(this);
-        if(mRxManager !=null){
-
-            mRxManager.clear();
+        mRxManager.clear();
+        if(mPresenter!=null){
+            mPresenter.destory();
         }
     }
 

@@ -1,10 +1,11 @@
 package library.lanshifu.com.lsf_library.base;
 
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,12 +27,11 @@ public  abstract class BaseToolBarActivity extends BaseActivity {
 
     @Override
     public int getLayoutId() {
-        return onGetContentViewId();
+        return  R.layout.base_activity;
     }
 
-
     @Override
-    protected void initView() {
+    protected void doAfterSetContentView() {
         mToolBarTitle = (TextView) findViewById(R.id.comm_toolbar_title);// 自定义的标题TextView
         FrameLayout container =  (FrameLayout) findViewById(R.id.comm_container);
         mToolbar = (Toolbar) findViewById(R.id.comm_toolbar);
@@ -41,24 +41,26 @@ public  abstract class BaseToolBarActivity extends BaseActivity {
             mToolBarTitle.setVisibility(View.VISIBLE);
             initToolBar(mToolbar);
             initContainer(container);
-            // 为了在动态改变菜单时不出错，在onCreateOptionsMenu时再初始化View
-            //onViewCreated();
+
         } else {
             mToolbar.setVisibility(View.GONE);
             mToolBarTitle.setVisibility(View.GONE);
             initContainer(container);
         }
-        onViewCreated();
-
     }
 
+
+    @Override
+    protected void initView() {
+
+    }
 
     private void initContainer(FrameLayout container) {
         View view = getLayoutInflater().inflate(getLayoutid(),null);
         if(view!=null){
             container.addView(view);
         }else{
-//            throw new IllegalArgumentException(this.getClass().getSimpleName() + "------请检查onCreateView是否返回为null了");
+            throw new IllegalArgumentException(this.getClass().getSimpleName() + "------getLayoutid 没有返回布局id");
         }
     }
 
@@ -82,17 +84,19 @@ public  abstract class BaseToolBarActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         mTBMenu = menu;
 //        mTBMenu.clear();
-        if (onGetTBMenuId() > 0) {
-            getMenuInflater().inflate(onGetTBMenuId(), menu);
+        if (getTBMenuId() > 0) {
+            getMenuInflater().inflate(getTBMenuId(), menu);
         }
 
         View tbBackView = getTBBackView();
         if( tbBackView!=null){
             tbBackView.setOnClickListener(backListener);
         }
-        onViewCreated();
+        //菜单加载完再OnVeiwCreate
+        onViewCreate();
         return super.onCreateOptionsMenu(menu);
     }
+
 
     // 当菜单被选中时调用
     @Override
@@ -103,7 +107,7 @@ public  abstract class BaseToolBarActivity extends BaseActivity {
 
 
     /**
-     * 得到返回的视图对象
+     * 得到返回的view
      *
      * @return 返回的视图对象
      */
@@ -116,7 +120,7 @@ public  abstract class BaseToolBarActivity extends BaseActivity {
     /**
      * 隐藏返回
      */
-    protected void hideTBBak(){
+    protected void hideTBBack(){
         ActionBar supportActionBar = getSupportActionBar();
         if(supportActionBar!=null){
             supportActionBar.setDisplayHomeAsUpEnabled(false);
@@ -126,7 +130,7 @@ public  abstract class BaseToolBarActivity extends BaseActivity {
     /**
      * 显示返回
      */
-    protected void showTBBak(){
+    protected void showTBBack(){
         ActionBar supportActionBar = getSupportActionBar();
         if(supportActionBar!=null){
             supportActionBar.setDisplayHomeAsUpEnabled(true);
@@ -198,7 +202,6 @@ public  abstract class BaseToolBarActivity extends BaseActivity {
         return addTBMenuItem(name, null, actionEnum, null, 0);
     }
 
-    private SparseArray<String> titleCache = new SparseArray<String>();
 
     protected void hideTBMenuItem(int menuId){
         MenuItem tbMenuItem = getTBMenuItem(menuId);
@@ -266,26 +269,41 @@ public  abstract class BaseToolBarActivity extends BaseActivity {
     }
 
     //======子类需要实现的方法======
-    protected abstract boolean onIfShowTB();
-
-    protected abstract int getLayoutid();
-
-    protected abstract void onViewCreated();
 
     /**
-     * 如果要重新设置右边的菜单，重写并返回一个新的menuId
+     * 是否显示toolbar
+     * @return
+     */
+    protected abstract boolean onIfShowTB();
+
+    /**
+     * 布局id
+     * @return
+     */
+    protected abstract int getLayoutid();
+
+
+    /**
+     * View 初始化完成了
+     */
+    protected abstract void onViewCreate();
+
+    /**
+     * 如果要设置右边三个点的菜单，重写并返回一个新的menuId
      *
      * @return 新的menuId，只有大于0时才会去使用返回的menu资源id，即如果返回小于0的数就能隐藏掉设置的Menu
      */
-    protected abstract int onGetTBMenuId();
+    protected  int getTBMenuId(){
+        return 0;
+    };
 
 
-    /**
-     * 当需要对布局文件进行调整，而又需要用到这里的toolBar设置时，可重写此方法返回一个新的布局id
-     *
-     * @return 新的布局id
-     */
-    protected int onGetContentViewId(){
-        return R.layout.base_activity;
+    protected void setFragment(int layoutId, Fragment fragment){
+        FragmentTransaction f = getSupportFragmentManager().beginTransaction();
+        f.add(layoutId,fragment);
+        f.commit();
+
+
     }
+
 }
