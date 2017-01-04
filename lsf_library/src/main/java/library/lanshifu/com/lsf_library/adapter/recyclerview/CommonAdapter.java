@@ -86,5 +86,10 @@ public abstract class CommonAdapter<T> extends MultiItemTypeAdapter<T>
         return mDatas.size();
     }
 
+    public void addAll(List<T> datas){
+        this.mDatas.addAll(datas);
+        notifyDataSetChanged();
+
+    }
 
 }
