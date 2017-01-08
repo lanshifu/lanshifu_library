@@ -43,13 +43,17 @@ public abstract class BaseFragment<P extends BasePresenter, M extends BaseModle>
         }
 
 
-        initPresenter();
-
-        initView();
-
         return mRootView;
     }
 
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initPresenter();
+        initView();
+    }
 
     /**
      * 通过Class跳转界面

@@ -1,6 +1,7 @@
 package library.lanshifu.com.lsf_library.commwidget;
 
 import android.content.Context;
+import android.support.annotation.ColorRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,9 +21,10 @@ public class IRecyclerView extends FrameLayout {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private View loadMoreView;
+    private Context mContent;
 
-    private boolean isRefresh = false;
-    private boolean isLoadMore = false;
+    private boolean isRefreshing = false; //正在刷新
+    private boolean isLoadingMore = false; //正在加载更多
 
     public IRecyclerView(Context context) {
         this(context,null);
@@ -34,6 +36,7 @@ public class IRecyclerView extends FrameLayout {
 
     public IRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.mContent = context;
 
         View view  = LayoutInflater.from(context).inflate(R.layout.irecycler_view, null);
 
@@ -42,11 +45,33 @@ public class IRecyclerView extends FrameLayout {
         loadMoreView = view.findViewById(R.id.loadMoreView);
 
         addListener();
+        initRefreshLayout();
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         addView(view,new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
     }
 
+
+    /**
+     * 初始化刷新控件颜色
+     */
+    private void initRefreshLayout() {
+        mSwipeRefreshLayout.setColorSchemeResources(
+                android.R.color.holo_blue_bright,   //第一圈的颜色。。。以此类推
+                android.R.color.holo_purple,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+    }
+
+
+
+    /**
+     * 可以自己设置刷新球的颜色
+     */
+    public void setColorSchemeResources(@ColorRes int... colorResIds){
+        mSwipeRefreshLayout.setColorSchemeResources(colorResIds);
+
+    }
 
 
     private void addListener() {
@@ -68,7 +93,7 @@ public class IRecyclerView extends FrameLayout {
 
                 int lastVisibleItemPosition = -1;
 
-                if(newState == RecyclerView.SCROLL_STATE_IDLE && !isLoadMore && mSwipeRefreshListener != null){
+                if(newState == RecyclerView.SCROLL_STATE_IDLE && !isLoadingMore && mSwipeRefreshListener != null){
 
                     RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
                     if(layoutManager instanceof LinearLayoutManager){
@@ -76,7 +101,7 @@ public class IRecyclerView extends FrameLayout {
                     }
 
                     //最后一条
-                    if(layoutManager.getChildCount() >0 && lastVisibleItemPosition>= layoutManager.getItemCount()-1 && !isLoadMore){
+                    if(layoutManager.getChildCount() >0 && lastVisibleItemPosition>= layoutManager.getItemCount()-1){
                         setIsLoadingMore(true);
                         mSwipeRefreshListener.onLoadMore();
                     }
@@ -93,8 +118,10 @@ public class IRecyclerView extends FrameLayout {
 
     }
 
+
+
     private void  setIsLoadingMore(boolean isLoadMore){
-        this.isLoadMore = isLoadMore;
+        this.isLoadingMore = isLoadMore;
         loadMoreView.setVisibility(isLoadMore ? VISIBLE : GONE);
 
     }
@@ -123,6 +150,10 @@ public class IRecyclerView extends FrameLayout {
 
     private OnSwipeRefreshListener mSwipeRefreshListener;
 
+    /**
+     * 设置刷新监听
+     * @param mSwipeRefreshListener
+     */
     public void setOnRefreshListener(OnSwipeRefreshListener mSwipeRefreshListener){
         this.mSwipeRefreshListener = mSwipeRefreshListener;
 

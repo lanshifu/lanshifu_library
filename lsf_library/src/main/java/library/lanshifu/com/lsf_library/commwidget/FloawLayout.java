@@ -82,7 +82,7 @@ class FlowLayout extends FrameLayout {
 
         }
 
-        mHeight = allHeight;
+//        mHeight = allHeight;
         if(heightMode == MeasureSpec.AT_MOST){
             //处理高度是包裹内容的情况
             mHeight = allHeight;
