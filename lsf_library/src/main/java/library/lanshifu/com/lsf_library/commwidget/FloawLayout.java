@@ -47,7 +47,7 @@ class FlowLayout extends FrameLayout {
         mWidth = widthSize;
         mHeight = heightSize;
 
-        int allWidth = paddingLeft + paddingRight ;
+        int allWidth = paddingLeft + paddingRight + widthSpace ;
         int allHeight = 0;
         int maxChildHeight = 0 ;
 
@@ -59,6 +59,9 @@ class FlowLayout extends FrameLayout {
                     getChildMeasureSpec(heightMeasureSpec,paddingTop+paddingBottom,params.height)
             );
 
+            if(i == 0){
+                maxChildHeight = child.getMeasuredHeight();
+            }
             if(maxChildHeight < child.getMeasuredHeight()){
                 //判断最大控件高
                 maxChildHeight = child.getMeasuredHeight();
@@ -67,21 +70,18 @@ class FlowLayout extends FrameLayout {
             if(allHeight == 0){
                 allHeight = child.getMeasuredHeight()+paddingTop + paddingBottom + heightSpace*2;
             }
-            allWidth += child.getMeasuredWidth();
-            allWidth += widthSpace;
+            allWidth += (child.getMeasuredWidth() +child.getPaddingLeft() +child.getPaddingRight() + widthSpace);
 
-            if(allWidth > mWidth){
+            if(allWidth >= mWidth){
 
                 //换行，高度为最大控件高度,总宽度为第一个控件宽
-                allHeight += maxChildHeight;
-                allHeight += heightSpace;
-                allWidth = paddingLeft +paddingRight +child.getMeasuredWidth();
+                allHeight += (maxChildHeight + heightSpace);
+                allWidth = paddingLeft +paddingRight +child.getMeasuredWidth() + widthSpace;
                 //默认第一个控件高度最大
                 maxChildHeight = child.getMeasuredHeight();
             }
 
         }
-
 //        mHeight = allHeight;
         if(heightMode == MeasureSpec.AT_MOST){
             //处理高度是包裹内容的情况
